@@ -14,8 +14,9 @@ namespace Base_Conversor
         public static string ConvertBaseToDecimal(string input, int inputBase)
         {  
             double output = 0, digitValue;
-            char[] num = input.ToCharArray();
             int commaPos = Reverse(input).IndexOf('.');
+            input = input.Remove(input.IndexOf('.'), 1);
+			char[] num = input.ToCharArray();
             int pos = commaPos == -1 ? input.Length-1 : input.Length - commaPos - 1;
 
             foreach(char digit in num)
@@ -53,20 +54,38 @@ namespace Base_Conversor
 
         public static string ConvertDecimalTo(string input, int outputBase)
         {
+            if (outputBase == 10) return input;
             string output = "";
-            char num;
-            int diff;
-            int dividend = int.Parse(input);
+            char digit;
+            int diff, integerPart;
+			double number = double.Parse(input), result;
+            int dividend = (int)Math.Round(number);
+            double coefficient = number - dividend;
 
-            while (dividend != 0)
+            do
             {
                 diff = dividend % outputBase;
-                num = ConvertDecimalDigitToBase(diff, outputBase);
-                output += num;
+                digit = ConvertDecimalDigitToBase(diff, outputBase);
+                output += digit;
                 dividend = dividend / outputBase;
+            } while (dividend != 0);
+
+            output = Reverse(output);
+
+            if(coefficient != 0){
+                output += ".";
+                int precision = 5;
+                while (precision != 0 && coefficient != 0){
+                    result = coefficient * outputBase;
+                    integerPart = (int)Math.Truncate(result);
+                    coefficient = result - integerPart;
+                    digit = ConvertDecimalDigitToBase(integerPart, outputBase);
+                    output += digit;
+                    precision--;
+                }
             }
 
-            return Reverse(output);
+            return output;
         }
 
         public static string ConvertNumber(string input, int inputBase, int outputBase)
