@@ -4,6 +4,11 @@ namespace Base_Conversor
 {
     class MainClass
     {
+        /// <summary>
+        /// Reverse the specified string.
+        /// </summary>
+        /// <returns>The reversed string.</returns>
+		/// <param name="s">String to be reverted.</param>
         public static string Reverse(string s)
         {
             char[] charArray = s.ToCharArray();
@@ -11,6 +16,12 @@ namespace Base_Conversor
             return new string(charArray);
         }
 
+        /// <summary>
+        /// Converts the number on the given base to decimal.
+        /// </summary>
+        /// <returns>The number in decimal base.</returns>
+        /// <param name="input">Number to be converted.</param>
+        /// <param name="inputBase">Number's base.</param>
         public static string ConvertBaseToDecimal(string input, int inputBase)
         {  
             double output = 0, digitValue;
@@ -30,13 +41,23 @@ namespace Base_Conversor
             return output.ToString();
         }
 
+        /// <summary>
+        /// Converts the digit to decimal.
+        /// </summary>
+        /// <returns>The decimal value of the digit.</returns>
+        /// <param name="digit">Digit.</param>
         public static double ConvertDigitToDecimal(char digit){
             char[] dictionary = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
             double digitValue = Char.GetNumericValue(digit);
             return digitValue >= 0 && digitValue < 10 ? digitValue : Array.IndexOf(dictionary, digit) + 10;
         }
 
-        // Sim, o nome ficou grande pra bosta, mas eu não sou criativo :V
+        /// <summary>
+        /// Coverts the decimal digit to the given base.
+        /// </summary>
+        /// <returns>The decimal digit in the given base.</returns>
+        /// <param name="value">Digit to be converted.</param>
+        /// <param name="outputBase">Digit base.</param>
         public static char ConvertDecimalDigitToBase(int value, int outputBase)
         {
             char[] dictionary = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
@@ -52,6 +73,12 @@ namespace Base_Conversor
                 return dictionary[value-10];
         }
 
+        /// <summary>
+        /// Converts the decimal number to the given base.
+        /// </summary>
+        /// <returns>The number converted to the given base.</returns>
+        /// <param name="input">Decimal numbel.</param>
+        /// <param name="outputBase">Base to convert the number.</param>
         public static string ConvertDecimalTo(string input, int outputBase)
         {
             if (outputBase == 10) return input;
@@ -88,10 +115,15 @@ namespace Base_Conversor
             return output;
         }
 
+        /// <summary>
+        /// Converts the number to the given base.
+        /// </summary>
+        /// <returns>The number.</returns>
+        /// <param name="input">Number to be converted.</param>
+        /// <param name="inputBase">Number's base.</param>
+        /// <param name="outputBase">Base to be converted.</param>
         public static string ConvertNumber(string input, int inputBase, int outputBase)
         {
-            // Se for cnoverter de decimal para qualquer um chama a função, se não pega o valor
-            //converte para a base decimal (gg  com posicional) e converte para decimal
             if (inputBase == 10)
                 return ConvertDecimalTo(input, outputBase);
             else
