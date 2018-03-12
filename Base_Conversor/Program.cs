@@ -4,6 +4,8 @@ namespace Base_Conversor
 {
     class MainClass
     {
+        public static readonly char[] DIGIT_DICTIONARY = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
         /// <summary>
         /// Reverse the specified string.
         /// </summary>
@@ -25,14 +27,16 @@ namespace Base_Conversor
         public static string ConvertBaseToDecimal(string input, int inputBase)
         {  
             double output = 0, digitValue;
-            int commaPos = Reverse(input).IndexOf('.');
-            input = input.Remove(input.IndexOf('.'), 1);
+            int aux = Reverse(input).IndexOf(',');
+            int commaPos = input.IndexOf(',');
+            if(commaPos >= 0)
+                input = input.Remove(commaPos, 1);
 			char[] num = input.ToCharArray();
-            int pos = commaPos == -1 ? input.Length-1 : input.Length - commaPos - 1;
+            int pos = aux == -1 ? input.Length-1 : input.Length - aux - 1;
 
             foreach(char digit in num)
             {
-                digitValue = ConvertDigitToDecimal(digit);
+                digitValue = ConvertDigitToDecimal(digit, inputBase);
                 output += digitValue * Math.Pow(inputBase, pos);
                 pos--;
             }
@@ -46,31 +50,31 @@ namespace Base_Conversor
         /// </summary>
         /// <returns>The decimal value of the digit.</returns>
         /// <param name="digit">Digit.</param>
-        public static double ConvertDigitToDecimal(char digit){
-            char[] dictionary = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-            double digitValue = Char.GetNumericValue(digit);
-            return digitValue >= 0 && digitValue < 10 ? digitValue : Array.IndexOf(dictionary, digit) + 10;
+        public static double ConvertDigitToDecimal(char digit, int digitBase)
+        {
+            double digitValue = Array.IndexOf(DIGIT_DICTIONARY, digit);
+            if (digitValue >= digitBase)
+            {
+                throw new System.ArgumentException("Digit " + digit + " is not part of the base " + digitBase);
+            }
+
+            return digitValue;
         }
 
         /// <summary>
         /// Coverts the decimal digit to the given base.
         /// </summary>
         /// <returns>The decimal digit in the given base.</returns>
-        /// <param name="value">Digit to be converted.</param>
-        /// <param name="outputBase">Digit base.</param>
-        public static char ConvertDecimalDigitToBase(int value, int outputBase)
+        /// <param name="number">Digit to be converted.</param>
+        /// <param name="numberBase">Digit base.</param>
+        public static char ConvertDecimalDigitToBase(int number, int numberBase)
         {
-            char[] dictionary = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-
-            if (value >= outputBase)
-            {//Ta cagado, lança erro pq o numero estora a base
+            char digit = DIGIT_DICTIONARY[number];
+            if(number >= numberBase){
+                throw new System.ArgumentException("Digit " + digit + " is not part of the base " + numberBase);
             }
 
-            if (value < 10)
-                //Conversão na tabela ASCII ;-;
-                return (char)(value + '0');
-            else
-                return dictionary[value-10];
+            return digit;
         }
 
         /// <summary>
@@ -141,17 +145,22 @@ namespace Base_Conversor
             do
             {
                 Console.Clear();
-                Console.WriteLine("Digite o número:");
+                Console.WriteLine("Type the number:");
                 input = Console.ReadLine();
-                Console.WriteLine("Digite a base do número:");
+                Console.WriteLine("Type it's base:");
                 inputBase = int.Parse(Console.ReadLine());
-                Console.WriteLine("Digite a base desejada:");
+                Console.WriteLine("Type the desired base:");
                 outputBase = int.Parse(Console.ReadLine());
+				try{
+                    output = ConvertNumber(input, inputBase, outputBase);
+                    Console.WriteLine(input + "(base " + inputBase + ") = " + output + "(base " + outputBase + ")");
+					Console.WriteLine("To convert another number type any key. (ESC to exit)");
+                }
+                catch(Exception e){
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine("To try again type any key. (ESC to exit)");
+                }
 
-                output = ConvertNumber(input, inputBase, outputBase);
-
-                Console.WriteLine(input + "(base " + inputBase + ") na base " + outputBase + " é " + output);
-                Console.WriteLine("Para converter outro numero digite qualquer tecla. (ESC para sair)");
                 control = Console.ReadKey();
             } while (control.Key != ConsoleKey.Escape);
         }
